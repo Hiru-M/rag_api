@@ -1,6 +1,5 @@
 # RAG Transformer Paper API
-
-This is a small project for my internship assignment.  
+This is a small project .  
 It lets you ask questions about the “Attention Is All You Need” Transformer paper.
 
 The system works like this:
@@ -34,5 +33,6 @@ To run it:docker run -p 8000:8000 rag-transformer-api
 - **app_streamlit.py** — simple UI  
 - **requirements.txt** — dependencies  
 - **Dockerfile** — container setup  
+
 
 
