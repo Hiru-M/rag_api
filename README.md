@@ -1,38 +1,83 @@
-# RAG Transformer Paper API
-This is a small project .  
-It lets you ask questions about the “Attention Is All You Need” Transformer paper.
+# Phase 3: Document Processing
 
-The system works like this:
-- The PDF is split into text chunks.
-- A FAISS index is created using sentence-transformer embeddings.
-- When you ask a question, the most relevant chunks are retrieved.
-- The answer is generated using a free model from OpenRouter.
-- The backend is built using FastAPI.
-- A simple Streamlit UI is included.
+## Overview
+Phase 3 focuses on preparing raw documents for a (RAG) pipeline.
+The objective of this phase is to extract **text and images from PDF documents**, split the text into manageable chunks, and generate structured metadata that links text chunks with relevant images.
 
-## How to Run the Project
+This phase acts as the **data preparation layer** for later stages such as embedding generation and vector database ingestion.
 
-### 1. Create the FAISS index (run once)
-### 2. Start the FastAPI server
-API will be available at:http://127.0.0.1:8000/docs
-### 3. Start the Streamlit UI
+---
 
-## Environment Variables
-Create a file named `.env` and add your OpenRouter key:
+## Objectives
+The main objectives of Phase 3 are:
 
-## Docker
+- Parse PDF documents and extract textual content
+- Extract embedded images from PDF pages
+- Split long text into overlapping chunks suitable for embedding models
+- Generate metadata linking text chunks with images and source information
+- Produce structured outputs for downstream multimodal processing
 
-To build the Docker container:
+---
 
-To run it:docker run -p 8000:8000 rag-transformer-api
+## Tools and Libraries Used
 
-## Files
+| Tool / Library | Purpose |
+|----------------|--------|
+| PyMuPDF (fitz) | PDF parsing, text extraction, and image extraction |
+| Pillow         | Image handling support |
+| Python Standard Library | File handling and JSON generation |
 
-- **app/main.py** — FastAPI backend  
-- **scripts/build_index.py** — creates FAISS index  
-- **app_streamlit.py** — simple UI  
-- **requirements.txt** — dependencies  
-- **Dockerfile** — container setup  
+All dependencies are managed inside a Python virtual environment to ensure isolation and reproducibility.
 
+---
+
+## Project Structure
+src/
+├── phase3_main.py
+├── document_processor.py
+├── chunking.py
+
+data/
+└── pdfs/
+└── sample_document.pdf
+
+output/
+├── images/
+└── metadata.json
+
+- `document_processor.py` handles PDF parsing and image extraction
+- `chunking.py` contains the text chunking logic
+- `phase3_main.py` orchestrates the full Phase 3 pipeline
+
+---
+
+## Text Chunking Strategy
+Text extracted from PDFs may exceed the input limits of embedding models.
+To address this, a **fixed-size chunking strategy with overlap** is used.
+
+- Chunk size: approximately 300 words
+- Overlap: 40 words
+- Overlapping chunks help preserve contextual continuity across segments
+---
+
+## Metadata Generation and Image Linking
+For each text chunk, metadata is generated containing:
+
+- Unique chunk identifier
+- Page number
+- Text content
+- References to images extracted from the same page
+- Source document information
+
+Images are linked to text chunks based on page-level association
+
+## Output of Phase 3
+At the end of Phase 3, the pipeline produces:
+
+- A folder containing extracted images
+- A structured `metadata.json` file containing:
+  - Text chunks
+  - Image references
+  - Page and source metadata
 
 
